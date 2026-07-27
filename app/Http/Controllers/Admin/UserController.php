@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\user\UserStoreRequest;
 use App\Http\Resources\Admin\User\UserDetailsApiResource;
 use App\Http\Resources\Admin\User\UserListApiResource;
+use App\Http\Resources\UsersListApiResourceCollection;
 use App\Models\User;
 use App\Services\UserService;
 use http\Env\Response;
@@ -34,7 +35,8 @@ class UserController extends Controller
         if (!$result->ok) {
             return ApiResponse::withMessage('sorry something went wrong')->withStatus(500)->build()->response();
         }
-        return ApiResponse::withData(UserListApiResource::collection($result->data)->resource)->build()->response();
+        return ApiResponse::withData(new UsersListApiResourceCollection($result->data))->build()->response();
+//        return ApiResponse::withData(UserListApiResource::collection($result->data)->resource)->build()->response();
     }
 
     /**

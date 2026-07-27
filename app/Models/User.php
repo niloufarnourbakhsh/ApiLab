@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['first_name','last_name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -33,14 +33,13 @@ class User extends Authenticatable
         ];
     }
     protected static $rules=[
-        'first_name'=>'required|string|min:3|max:255',
-        'last_name'=>'required|string|min:3|max:255',
+        'name'=>'required|string|min:3|max:255',
         'email'=>'required|email|unique:users,email',
         'password'=>'required|min:8|max:255',
     ];
 
-    public function getFullNameAttribute()
-    {
-        return $this->first_name.' '.$this->last_name;
-    }
+//    public function getFullNameAttribute()
+//    {
+//        return $this->first_name.' '.$this->last_name;
+//    }
 }

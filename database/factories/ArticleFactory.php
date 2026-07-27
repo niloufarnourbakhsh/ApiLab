@@ -19,7 +19,7 @@ class ArticleFactory extends Factory
     {
         return [
             'title'=>$this->faker->sentence(2),
-            'user_id'=>$this->faker->numberBetween(1,49)
+            'user_id'=>$this->faker->numberBetween(1,30)
         ];
     }
 }
