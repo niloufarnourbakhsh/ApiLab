@@ -21,20 +21,20 @@ use \App\RestfulApi\Facades\ApiResponse;
 class UserController extends Controller
 {
 
-    public function __construct( public UserService $userService)
+    public function __construct(public UserService $userService)
     {
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $usersQuery=User::query();
-        if (\request()->has('email')){
-            $usersQuery=$usersQuery->where('email','like',\request('email'));
+        $result = $this->userService->getAllUsers(\request()->all());
+        if (!$result->ok) {
+            return ApiResponse::withMessage('sorry something went wrong')->withStatus(500)->build()->response();
         }
-        $users=$usersQuery->paginate(8);
-        return UserListApiResource::collection($users);
+        return ApiResponse::withData(UserListApiResource::collection($result->data)->resource)->build()->response();
     }
 
     /**
@@ -42,10 +42,10 @@ class UserController extends Controller
      */
     public function store(UserCreateApiRequest $request)
     {
-        $result=$this->userService->RegisterUser($request->validated());
-            if (!$result->ok){
-                return ApiResponse::withMessage('something went wrong')->withStatus(500)->build()->response();
-            }
+        $result = $this->userService->RegisterUser($request->validated());
+        if (!$result->ok) {
+            return ApiResponse::withMessage('something went wrong')->withStatus(500)->build()->response();
+        }
         return ApiResponse::withMessage('user Created successfully')
             ->withData($result->data)->build()->response();
     }
@@ -55,7 +55,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return new UserDetailsApiResource($user);
+        $user = $this->userService->getUserInfo($user);
+        if (!$user->ok) {
+            return ApiResponse::withMessage('user Not Found')->withData(404)->build()->response();
+        }
+        return ApiResponse::withData(new UserDetailsApiResource($user->data))->build()->response();
     }
 
     /**
@@ -63,19 +67,11 @@ class UserController extends Controller
      */
     public function update(UserUpdateApiRequest $request, User $user)
     {
-        try {
-            $inputs=$request->validated();
-            $user->update($inputs);
-        }catch (\Throwable $throwable){
-            app()[ExceptionHandler::class]->report($throwable);
-            return \response()->json([
-                'message'=>'somthing went wrong'
-            ],500);
+        $updated = $this->userService->updateUser($user, $request->validated());
+        if (!$updated->ok) {
+            return ApiResponse::withMessage('something went wrong')->withStatus(500)->build()->response();
         }
-        return response()->json([
-            'message'=>'User Updated successfully',
-            'data'=>$user
-        ]);
+        return ApiResponse::withMessage('update successfully')->withData($updated->data)->build()->response();
     }
 
     /**
@@ -83,23 +79,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        try {
-            $user->delete();
-        }catch (\Throwable $throwable){
-            app()[ExceptionHandler::class]->report($throwable);
-            return \response()->json([
-                'message'=>'somthing went wrong'
-            ],500);
+        $deletion=$this->userService->deleteUser($user);
+        if (! $deletion->ok){
+            return ApiResponse::withMessage('something went wrong')->withStatus(404)->build()->response();
         }
-        return response()->json([
-            'message'=>'User deleted successfully',
-        ]);
+        return ApiResponse::withMessage('no Content')->build()->response();
     }
-//    protected function ApiResponse($message=null,$data=null, $status=200){
-//        $body=[];
-//        !is_null($message) && $body['message']=$message;
-//        !is_null($data) && $body['data']=$data;
-//
-//        return \response()->json($body,$status);
-//    }
+
 }
