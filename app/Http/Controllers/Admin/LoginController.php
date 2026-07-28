@@ -15,7 +15,7 @@ class LoginController extends Controller
             return ApiResponse::withMessage(__('auth.failed'))->withStatus(401)->build()->response();
         }
         $user=auth()->user();
-        $token= $user->createToken('api_token')->plainTextToken;
+        $token= $user->createToken(\request()->header('User-agent'))->plainTextToken;
         return ApiResponse::withAppends([
             'name'=>$user->name,
             'token'=>$token

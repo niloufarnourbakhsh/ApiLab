@@ -14,6 +14,7 @@ use App\Services\UserService;
 use http\Env\Response;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -31,6 +32,9 @@ class UserController extends Controller
      */
     public function index()
     {
+//        if (! Gate::allows('test')){
+//            return ApiResponse::withStatus(403)->build()->response();
+//        }
         $result = $this->userService->getAllUsers(\request()->all());
         if (!$result->ok) {
             return ApiResponse::withMessage('sorry something went wrong')->withStatus(500)->build()->response();

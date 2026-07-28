@@ -6,6 +6,7 @@ use App\Models\User;
 use App\RestfulApi\ApiFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class UserCreateApiRequest extends ApiFormRequest
 {
@@ -14,7 +15,7 @@ class UserCreateApiRequest extends ApiFormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('test');
     }
 
     /**
