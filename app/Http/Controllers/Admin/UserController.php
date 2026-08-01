@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\ApiRequests\Admin\User\DeleteApiRequest;
+use App\Http\ApiRequests\Admin\User\IndexApiRequest;
+use App\Http\ApiRequests\Admin\User\ShowApiRequest;
 use App\Http\ApiRequests\Admin\user\UserCreateApiRequest;
 use App\Http\ApiRequests\Admin\user\UserUpdateApiRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\user\UserStoreRequest;
 use App\Http\Resources\Admin\User\UserDetailsApiResource;
 use App\Http\Resources\Admin\User\UserListApiResource;
 use App\Http\Resources\UsersListApiResourceCollection;
 use App\Models\User;
 use App\Services\UserService;
-use http\Env\Response;
-use Illuminate\Contracts\Debug\ExceptionHandler;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use \App\RestfulApi\Facades\ApiResponse;
 
 class UserController extends Controller
@@ -30,7 +25,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexApiRequest $request)
     {
 //        if (! Gate::allows('test')){
 //            return ApiResponse::withStatus(403)->build()->response();
@@ -59,7 +54,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $user,ShowApiRequest $request)
     {
         $user = $this->userService->getUserInfo($user);
         if (!$user->ok) {
@@ -83,7 +78,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user, DeleteApiRequest $request)
     {
         $deletion=$this->userService->deleteUser($user);
         if (! $deletion->ok){

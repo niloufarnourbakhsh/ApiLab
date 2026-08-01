@@ -6,6 +6,7 @@ use App\Models\User;
 use App\RestfulApi\ApiFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class UserUpdateApiRequest extends ApiFormRequest
@@ -15,7 +16,7 @@ class UserUpdateApiRequest extends ApiFormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('update_user');
     }
 
     /**

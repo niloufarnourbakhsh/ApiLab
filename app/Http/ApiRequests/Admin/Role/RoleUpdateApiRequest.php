@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Http\ApiRequests\Admin\user;
+namespace App\Http\ApiRequests\Admin\Role;
 
-use App\Models\User;
+use App\Models\Role;
 use App\RestfulApi\ApiFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 
-class UserCreateApiRequest extends ApiFormRequest
+class RoleUpdateApiRequest extends ApiFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('create_user');
+        return true;
     }
 
     /**
@@ -25,6 +24,9 @@ class UserCreateApiRequest extends ApiFormRequest
      */
     public function rules(): array
     {
-        return User::rules();
+        return Role::rules([
+            'name' => 'required|string|unique:roles,name,' . $this->role->id,
+        ]);
+
     }
 }
