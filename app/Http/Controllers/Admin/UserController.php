@@ -9,11 +9,11 @@ use App\Http\ApiRequests\Admin\user\UserCreateApiRequest;
 use App\Http\ApiRequests\Admin\user\UserUpdateApiRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\User\UserDetailsApiResource;
-use App\Http\Resources\Admin\User\UserListApiResource;
 use App\Http\Resources\UsersListApiResourceCollection;
 use App\Models\User;
 use App\Services\UserService;
 use \App\RestfulApi\Facades\ApiResponse;
+use OpenApi\Attributes as OA;
 
 class UserController extends Controller
 {
@@ -25,6 +25,25 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/users',
+        description : 'Get all Users',
+        summary: 'get all users',
+        security :[['sanctum' => []]],
+//        security :[['bearerAuth'=> []]],
+        tags: ['Users'],
+        parameters: [
+            new OA\Parameter(name: 'email',in: 'query', description: 'path description',required: false ),
+            new OA\Parameter(name: 'is_active',in: 'query', required: true,
+                schema: new OA\Schema( type: "boolean", default: true))
+        ],
+        responses: [
+            new OA\Response(response: 200,
+                description: 'successful operation!!!',
+                content: new OA\JsonContent(ref: '#/components/schemas/UsersItemSchema')),
+            new OA\Response(response: 403, description: 'unauthorize', content: new OA\JsonContent(ref: '#/components/schemas/403ResponseSchema'))
+        ],
+    )]
     public function index(IndexApiRequest $request)
     {
 //        if (! Gate::allows('test')){
@@ -54,6 +73,24 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/users/{user}',
+        description : 'Show a User',
+        summary: 'get a specific user',
+        security :[['sanctum' => []]],
+//        security :[['bearerAuth'=> []]],
+        tags: ['Users'],
+        parameters: [
+            new OA\Parameter(name: 'is_active',in: 'path', required: true,
+                schema: new OA\Schema( type: "boolean", default: true))
+        ],
+        responses: [
+            new OA\Response(response: 200,
+                description: 'successful operation!!!',
+                content: new OA\JsonContent(ref: '#/components/schemas/UsersItemSchema')),
+            new OA\Response(response: 403, description: 'unauthorize', content: new OA\JsonContent(ref: '#/components/schemas/403ResponseSchema'))
+        ],
+    )]
     public function show(User $user,ShowApiRequest $request)
     {
         $user = $this->userService->getUserInfo($user);

@@ -1,0 +1,212 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ApiLab Documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Login User",
+                "description": "Login User",
+                "operationId": "542d467d9ce60b98cd576a3d12939eba",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "niloufar@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation!!!",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "invalid "
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get all users",
+                "description": "Get all Users",
+                "operationId": "9456f74ab995d6e45602d63373640651",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "path description",
+                        "required": false
+                    },
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation!!!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsersItemSchema"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "unauthorize",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/403ResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/users/{user}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get a specific user",
+                "description": "Show a User",
+                "operationId": "a767508da35bb86d312c86b73c23deb8",
+                "parameters": [
+                    {
+                        "name": "is_active",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean",
+                            "default": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation!!!",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsersItemSchema"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "unauthorize",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/403ResponseSchema"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "403ResponseSchema": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Access denied"
+                    }
+                },
+                "type": "object"
+            },
+            "UsersItemSchema": {
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": "200"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": "[id=>1,name=>ali]"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Login",
+            "description": "Login"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
+        }
+    ]
+}
