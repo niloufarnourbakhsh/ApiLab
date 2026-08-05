@@ -33,7 +33,7 @@ class UserController extends Controller
 //        security :[['bearerAuth'=> []]],
         tags: ['Users'],
         parameters: [
-            new OA\Parameter(name: 'email',in: 'query', description: 'path description',required: false ),
+            new OA\Parameter(name: 'email', description: 'path description',in: 'query',required: false ),
             new OA\Parameter(name: 'is_active',in: 'query', required: true,
                 schema: new OA\Schema( type: "boolean", default: true))
         ],
